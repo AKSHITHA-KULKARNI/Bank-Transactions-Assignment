@@ -1,15 +1,35 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+// Main class to simulate the bank system
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Bank bank = new Bank();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        // Initialize accounts
+        bank.addAccount(1, 500);
+        bank.addAccount(2, 1000);
+
+        // Create customer threads
+        Customer customer1 = new Customer(bank, 1);
+        Customer customer2 = new Customer(bank, 2);
+
+        // Start the customer threads
+        customer1.start();
+        customer2.start();
+
+        // Wait for threads to complete
+        try {
+            customer1.join();
+            customer2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // Print final account balances
+        System.out.println("Final balance of account 1: " + bank.getBalance(1));
+        System.out.println("Final balance of account 2: " + bank.getBalance(2));
     }
 }
